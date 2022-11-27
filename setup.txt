@@ -1,0 +1,12 @@
+# CONDA
+
+conda create -n venv_dc python=3.9
+conda install -c anaconda beautifulsoup4
+
+
+# pip
+
+python -m virtualenv venv_dc
+.\Script\activate
+
+pip install beautifulsoup4
