@@ -1,6 +1,10 @@
+import datetime
+
 from flask import Flask, request, jsonify, render_template, make_response, redirect, url_for
 from graph_funcs import get_candlestick
 from stock_info import get_historical
+from web_scraping import get_stock_news, get_new_articles
+from db_funcs import load_database
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -24,20 +28,36 @@ def index():
     return plot_single_graph('AAPL')
 
 
+@app.route('/news')
+def news():
+    df = load_database()
+    dt_str = lambda x: datetime.datetime.strftime(datetime.datetime.fromisoformat(x), '%b %d, %Y, %H:%M %Z')
+    articles = [(row[0], row[1], row[2], dt_str(row[3])) for i, row in df.iterrows()]
+    print('Rendering news page.')
+    return render_template('news.html', articles=articles)
+
+
 def plot_single_graph(stock_name):
     title = f"{stock_name} - Last 6 months"
     content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
     return render_template('dashboard.html', content=content)
 
 
-@app.route('/search',methods = ['POST'])
+def plot_single_graph_news(stock_name):
+    title = f"{stock_name} - Last 6 months"
+    content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
+    news = get_stock_news(stock_name)
+    return render_template('dashboard.html', content=content, news=news)
+
+
+@app.route('/search', methods=['POST'])
 def search():
     if request.method == "POST":
         stock_name = dict(request.form).get('search')
     else:
         return redirect(url_for('/'))
 
-    return plot_single_graph(stock_name)
+    return plot_single_graph_news(stock_name)
 
 
 if __name__ == '__main__':

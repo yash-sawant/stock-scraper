@@ -2,73 +2,6 @@
 
 {% block mainBlock %}
 <style>
-
-           div{
-            font-family: 'Source Sans Pro', sans-serif;
-            letter-spacing: .04em;
-            /* display: flex; */
-           }
-           nav{
-            padding-left: 5em;
-           }
-           .navbar{
-            padding:.6em 22%;
-            border-bottom: 1px solid rgba(119, 119, 119, 0.561);
-            display: flex;
-            align-items: center;
-           }
-           .nav-link{
-            padding:.5em .75em;
-            color: #fff;
-            transition: 0.3s;
-           }
-           .nav-link:hover {
-            text-decoration: underline;
-            color:#86D3C6 !important;
-            font-weight: bold;
-           }
-           .container{
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-           }
-           .gallery{
-            margin: 1em;
-            background-color: 'black';
-            padding: 1em 1em;
-            border-radius: 1em;
-            box-shadow:0 6px 6px hsl(0deg 0% 0% / 0.3);
-			width: 95%;
-           }
-           .gallery > h4{
-            text-align: center;
-            font-weight: bold;
-            color: #6abaad;
-           }
-			/* div.gallery:hover {
-			  border: 1px solid #777;
-			} */
-
-			div.gallery img {
-			  width: 100%;
-			  height: auto;
-			}
-
-			div.desc {
-              color: #111314;
-			  padding: 15px;
-			  text-align: center;
-			}
-            /* @media (min-width: 768px) {
-                .navbar-collapse {
-                    height: auto;
-                }
-                .navbar{
-                    height:auto;
-                    min-height: 50%;
-                }
-            } */
-
 </style>
 
 
@@ -80,6 +13,14 @@
     </a>
 </div>
 {%endfor%}
-
+{%for src, article, title in news %}
+<main role="main" class="container">
+    <div class="jumbotron">
+        <h5>{{title}}</h5>
+        <p class="lead">{{article}}</p>
+        <a class="btn btn-lg btn-primary" href="{{src}}" role="button">Go to source &raquo;</a>
+    </div>
+</main>
+{%endfor%}
 
 {% endblock %}

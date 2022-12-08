@@ -26,52 +26,6 @@
 
 <body>
 <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        /* Style the search field */
-        form.example input[type=text] {
-          padding: 10px;
-          font-size: 17px;
-          border: 1px solid grey;
-          float: left;
-          width: 80%;
-          background: #f1f1f1;
-        }
-
-        /* Style the submit button */
-        form.example button {
-          float: left;
-          width: 20%;
-          padding: 10px;
-          background: #2196F3;
-          color: white;
-          font-size: 17px;
-          border: 1px solid grey;
-          border-left: none; /* Prevent double borders */
-          cursor: pointer;
-        }
-
-        form.example button:hover {
-          background: #0b7dda;
-        }
-
-        /* Clear floats */
-        form.example::after {
-          content: "";
-          clear: both;
-          display: table;
-        }
-
-        body{
-            font-family: 'Source Sans Pro', sans-serif;
-            letter-spacing: .04em;
-            background-color: #111314;
-            color: #fff;
-        }
-
-
 
 </style>
 <div class="container-fluid">
@@ -88,7 +42,7 @@
 
                     <div class="collapse navbar-collapse my-nav-links" id="navbarNavAltMarkup2">
                         <div class="navbar-nav ml-auto mr-3">
-                            <a class="nav-item nav-link" href="">News</a>
+                            <a class="nav-item nav-link" href="{{ url_for('news') }}">News</a>
                         </div>
                     </div>
                     <div class="collapse navbar-collapse my-nav-links" id="navbarNavAltMarkup1">
@@ -117,21 +71,19 @@
         </div>
     </div>
     <div class="container">
-            <form method="post" action="/search">
-                <div class="input-group">
-                    <div class="form-outline">
-                        <input type="search" id="form1" name="search" class="form-control" />
-                        <label class="form-label" for="form1">Search</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-search"></i>
-                    </button>
+        <form method="post" action="/search">
+            <div class="input-group">
+                <div class="form-outline">
+                    <input type="search" id="form1" name="search" class="form-control"/>
+                    <label class="form-label" for="form1">Search</label>
                 </div>
-            </form>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
     </div>
-
-
-    </div>
+</div>
 
 </div>
 <div class="container">
