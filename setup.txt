@@ -2,7 +2,7 @@
 
 conda create -n venv_dc python=3.9
 conda install -c anaconda beautifulsoup4
-
+conda install -c conda-forge yfinance
 
 # pip
 

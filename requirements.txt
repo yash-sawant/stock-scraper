@@ -1,0 +1,7 @@
+flask
+firebase_admin
+matplotlib
+pandas
+numpy
+yfinance
+beautifulsoup4
