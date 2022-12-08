@@ -2,13 +2,11 @@
 {% block mainBlock %}
 {%for src,heading,article,timestamp in articles %}
 <div class="card">
-    <div class="card-header">
-        {{time_stamp}}
-    </div>
     <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">{{time_stamp}}</h6>
         <h5 class="card-title">{{heading}}</h5>
         <p class="card-text">{{article}}</p>
-        <a href="{{src}}" class="btn btn-primary">Go to source</a>
+        <a href="{{src}}" class="card-link">Go to source</a>
     </div>
 </div>
 {%endfor%}

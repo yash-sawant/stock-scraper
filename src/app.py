@@ -1,10 +1,9 @@
 import datetime
-
 from flask import Flask, request, jsonify, render_template, make_response, redirect, url_for
 from graph_funcs import get_candlestick
 from stock_info import get_historical
 from web_scraping import get_stock_news, get_new_articles
-from db_funcs import load_database
+from db_funcs import load_database, refresh_database
 
 # Initialize Flask App
 app = Flask(__name__)
@@ -13,6 +12,7 @@ import base64
 from io import BytesIO
 from matplotlib.figure import Figure
 
+NEWS_LIMIT=10
 
 def fig_2_img(fig):
     buf = BytesIO()
@@ -30,11 +30,14 @@ def index():
 
 @app.route('/news')
 def news():
-    df = load_database()
+    # df = load_database()
+    df = refresh_database()
+    print(df.iloc[0])
     dt_str = lambda x: datetime.datetime.strftime(datetime.datetime.fromisoformat(x), '%b %d, %Y, %H:%M %Z')
     articles = [(row[0], row[1], row[2], dt_str(row[3])) for i, row in df.iterrows()]
+    print(articles)
     print('Rendering news page.')
-    return render_template('news.html', articles=articles)
+    return render_template('news.html', articles=articles[:NEWS_LIMIT])
 
 
 def plot_single_graph(stock_name):
@@ -47,15 +50,15 @@ def plot_single_graph_news(stock_name):
     title = f"{stock_name} - Last 6 months"
     content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
     news = get_stock_news(stock_name)
-    return render_template('dashboard.html', content=content, news=news)
+    return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
 
 
-@app.route('/search', methods=['POST'])
+@app.route('/search', methods=['POST','GET'])
 def search():
     if request.method == "POST":
         stock_name = dict(request.form).get('search')
     else:
-        return redirect(url_for('/'))
+        return redirect(url_for('index'))
 
     return plot_single_graph_news(stock_name)
 

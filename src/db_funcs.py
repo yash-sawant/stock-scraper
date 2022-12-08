@@ -31,7 +31,7 @@ def convert_to_dataframe(data):
         df_dict['source'].append(row[0])
         df_dict['title'].append(row[1])
         df_dict['article_brief'].append(row[2])
-        df_dict['datetime'].append(row[3])
+        df_dict['datetime'].append(row[3].isoformat())
     return pd.DataFrame(df_dict)
 
 
@@ -43,7 +43,7 @@ def load_database():
 def refresh_database():
     global DATABASE_GENERATED
     last_time = get_last_update_dt()
-    print('Loading news article since ',last_time.isoformat())
+    print('Loading news article since ',last_time)
     data = get_new_articles(last_time)
     df = convert_to_dataframe(data)
     if DATABASE_GENERATED:

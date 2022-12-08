@@ -36,7 +36,7 @@ def extract_news_from_page(html):
     result = []
     for hd in headlines:
         src = hd.a.attrs['href']
-        head = hd.h3.text.split('\n')[3]
+        head = hd.h3.text#.split('\n')[3]
         article = hd.p.text
         time_pb = hd.h3.small.text
         dt_obj = validate_prn_date_time(time_pb)
