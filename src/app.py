@@ -12,9 +12,17 @@ import base64
 from io import BytesIO
 from matplotlib.figure import Figure
 
-NEWS_LIMIT=10
+NEWS_LIMIT = 10
+
+df = refresh_database()
+
 
 def fig_2_img(fig):
+    '''
+    Converts matplotlib figure to a static image
+    :param fig: Matplotlib figure
+    :return:
+    '''
     buf = BytesIO()
     fig.savefig(buf, format="png")
     # Embed the result in the html output.
@@ -30,30 +38,37 @@ def index():
 
 @app.route('/news')
 def news():
-    # df = load_database()
-    df = refresh_database()
-    print(df.iloc[0])
+    df = load_database(last_n=NEWS_LIMIT)
     dt_str = lambda x: datetime.datetime.strftime(datetime.datetime.fromisoformat(x), '%b %d, %Y, %H:%M %Z')
-    articles = [(row[0], row[1], row[2], dt_str(row[3])) for i, row in df.iterrows()]
-    print(articles)
+    articles = [(row[0], row[1], row[2], dt_str(row[3])) for i, row in df.iloc[::-1].iterrows()]
     print('Rendering news page.')
     return render_template('news.html', articles=articles[:NEWS_LIMIT])
 
 
 def plot_single_graph(stock_name):
+    '''
+    Renders graph for given stock
+    :param stock_name: name of stock
+    :return: webpage
+    '''
     title = f"{stock_name} - Last 6 months"
     content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
     return render_template('dashboard.html', content=content)
 
 
 def plot_single_graph_news(stock_name):
+    '''
+    Renders graph for given stock and news from finviz
+    :param stock_name: name of stock
+    :return: webpage
+    '''
     title = f"{stock_name} - Last 6 months"
     content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
     news = get_stock_news(stock_name)
     return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
 
 
-@app.route('/search', methods=['POST','GET'])
+@app.route('/search', methods=['POST', 'GET'])
 def search():
     if request.method == "POST":
         stock_name = dict(request.form).get('search')

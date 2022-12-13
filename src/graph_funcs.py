@@ -6,19 +6,18 @@ from functools import lru_cache
 import seaborn as sb
 import pandas as pd
 
-
-plt.set_cmap('jet')
-plt.rcParams['axes.facecolor'] = 'black'
-plt.style.use('dark_background')
+# plt.set_cmap('jet')
+# plt.rcParams['axes.facecolor'] = 'white'
+# plt.style.use('dark_background')
 
 
 def get_candlestick(df,title=''):
 
-    fig = plt.figure()
+    fig = plt.figure(figsize=(20,10))
 
     #define width of candlestick elements
-    width = .4
-    width2 = .05
+    width = 1
+    width2 = .07
 
     #define up and down df
     up = df[df.Close>=df.Open]
@@ -43,9 +42,7 @@ def get_candlestick(df,title=''):
 
     #rotate x-axis tick labels
     plt.xticks(rotation=45, ha='right')
-    # https://jakevdp.github.io/PythonDataScienceHandbook/04.10-customizing-ticks.html
-    # https://stackoverflow.com/questions/6682784/reducing-number-of-plot-ticks
-
+    plt.grid()
     plt.title(title)
 
     # #display candlestick chart
