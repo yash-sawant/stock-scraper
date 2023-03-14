@@ -14,7 +14,7 @@ from matplotlib.figure import Figure
 
 NEWS_LIMIT = 10
 
-df = refresh_database()
+# df = refresh_database()
 
 
 def fig_2_img(fig):
