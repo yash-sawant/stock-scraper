@@ -1,10 +1,12 @@
 import matplotlib
+matplotlib.use('agg')
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 from matplotlib.figure import Figure
+
 from stock_info import get_historical
 
 PRED_SIZE = 20
