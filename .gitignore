@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # model
-src/model/model_keras_150
-src/model/model_tf_150
-src/model/model_v1_alt
+model/model_keras_150
+model/model_tf_150
+model/model_v1_alt

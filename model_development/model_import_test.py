@@ -7,7 +7,7 @@ def pred_reshape(x):
     return x.values.reshape((1, *x.shape))
 
 
-df = pd.read_csv('../src/stock_cache.csv')
+df = pd.read_csv('../stock_cache.csv')
 
 # model = tf.saved_model.load('../src/model/model_150_v2')
 model = load_model('../src/model/model_150_v2')
