@@ -127,3 +127,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# model
+src/model/model_keras_150
+src/model/model_tf_150
+src/model/model_v1_alt

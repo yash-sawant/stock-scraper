@@ -1,39 +1,27 @@
 import datetime
-from flask import Flask, request, jsonify, render_template, make_response, redirect, url_for
-from graph_funcs import get_candlestick
+from flask import Flask, request, render_template, redirect, url_for
+from graph_funcs import plot_single_graph, plot_eval_graph
 from stock_info import get_historical
-from web_scraping import get_stock_news, get_new_articles
 from db_funcs import load_database, refresh_database
+from web_scraping import get_stock_news, get_new_articles
+import os
+
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+from prediction import predict, evaluate
 
 # Initialize Flask App
 app = Flask(__name__)
 
-import base64
-from io import BytesIO
-from matplotlib.figure import Figure
-
+DEFAULT_STOCK = 'GOOG'
 NEWS_LIMIT = 10
+
 
 # df = refresh_database()
 
 
-def fig_2_img(fig):
-    '''
-    Converts matplotlib figure to a static image
-    :param fig: Matplotlib figure
-    :return:
-    '''
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    # Embed the result in the html output.
-    data = base64.b64encode(buf.getbuffer()).decode("ascii")
-    fig.clf()
-    return data
-
-
 @app.route('/')
 def index():
-    return plot_single_graph('AAPL')
+    return redirect(url_for('market'))
 
 
 @app.route('/news')
@@ -45,37 +33,42 @@ def news():
     return render_template('news.html', articles=articles[:NEWS_LIMIT])
 
 
-def plot_single_graph(stock_name):
-    '''
-    Renders graph for given stock
-    :param stock_name: name of stock
-    :return: webpage
-    '''
-    title = f"{stock_name} - Last 6 months"
-    content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
-    return render_template('dashboard.html', content=content)
-
-
-def plot_single_graph_news(stock_name):
-    '''
-    Renders graph for given stock and news from finviz
-    :param stock_name: name of stock
-    :return: webpage
-    '''
-    title = f"{stock_name} - Last 6 months"
-    content = [(fig_2_img(get_candlestick(get_historical(stock_name), title=title)), title)]
-    news = get_stock_news(stock_name)
-    return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
-
-
 @app.route('/search', methods=['POST', 'GET'])
 def search():
     if request.method == "POST":
         stock_name = dict(request.form).get('search')
+        data = get_historical(stock_name)
+        content = plot_single_graph(stock_name, data)
+        return render_template('dashboard.html', content=content)
     else:
         return redirect(url_for('index'))
 
-    return plot_single_graph_news(stock_name)
+
+@app.route('/market', methods=['POST', 'GET'])
+def market():
+    if request.method == "POST":
+        stock_name = dict(request.form).get('search')
+    else:
+        stock_name = DEFAULT_STOCK
+    news = get_stock_news(stock_name)
+    data = get_historical(stock_name)
+    pred = predict(data)
+    content = plot_single_graph(stock_name, data, pred=pred)
+    return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
+
+
+@app.route('/evaluation', methods=['POST', 'GET'])
+def evaluation():
+    if request.method == "POST":
+        stock_name = dict(request.form).get('search')
+    else:
+        stock_name = DEFAULT_STOCK
+    data = get_historical(stock_name)
+
+    pred, true = evaluate(data)
+
+    content = plot_eval_graph(stock_name, data, pred, true)
+    return render_template('evaluation.html', content=content)
 
 
 if __name__ == '__main__':

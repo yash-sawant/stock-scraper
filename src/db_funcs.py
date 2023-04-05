@@ -53,7 +53,7 @@ def load_database(last_n = 10):
 
 
 def refresh_database():
-    global DATABASE_GENERATED
+    global DATABASE_GENERATED, DB_FILE_NAME
 
     last_time = get_last_update_dt()
     print('Loading news article since ', last_time)

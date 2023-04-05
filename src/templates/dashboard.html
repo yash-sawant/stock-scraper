@@ -3,24 +3,37 @@
 {% block mainBlock %}
 <style>
 </style>
+<div class="container">
+    <form class="form-inline my-2 my-lg-0" method="post" action="/market">
+        <input class="form-control mr-sm-2" type="search" name="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
 
-
-{%for graph,title in content %}
-<div class="gallery">
-
-    <a target="_blank" , href>
-        <img src='data:image/png;base64,{{graph}}' class="img-fluid">
-    </a>
 </div>
-{%endfor%}
-{%for src, article, title in news %}
-<main role="main" class="container">
-    <div class="jumbotron">
-        <h5>{{title}}</h5>
-        <p class="lead">{{article}}</p>
-        <a class="btn btn-lg btn-primary" href="{{src}}" role="button">Go to source &raquo;</a>
+
+
+<div class="container-fluid">
+
+    {% for graph,title in content %}
+    <div class="gallery">
+        <h2>{{ title }}</h2>
+        <a target="_blank" href="#">
+            <img src='data:image/png;base64,{{graph}}' class="img-fluid">
+        </a>
     </div>
-</main>
-{%endfor%}
+    {% endfor %}
+
+    {% for src, article, title in news %}
+    <main role="main" class="container">
+        <div class="jumbotron">
+            <h5>{{title}}</h5>
+            <p class="lead">{{article}}</p>
+            <a class="btn btn-lg btn-primary" href="{{src}}" role="button">Go to source &raquo;</a>
+        </div>
+    </main>
+    {% endfor %}
+</div>
+
+
 
 {% endblock %}
