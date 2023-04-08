@@ -50,8 +50,9 @@ def market():
         stock_name = dict(request.form).get('search')
     else:
         stock_name = DEFAULT_STOCK
-    # news = get_stock_news(stock_name)
+    news = [] #get_stock_news(stock_name)
     data = get_historical(stock_name)
+    print(data)
     pred = predict(data)
     content = plot_single_graph(stock_name, data, pred=pred)
     return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
