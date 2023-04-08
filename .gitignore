@@ -132,3 +132,5 @@ dmypy.json
 model/model_keras_150
 model/model_tf_150
 model/model_v1_alt
+test_case_files/
+stock_cache.csv
