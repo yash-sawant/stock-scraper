@@ -57,7 +57,7 @@ def market():
         stock_name = dict(request.form).get('search')
     else:
         stock_name = DEFAULT_STOCK
-    news = get_stock_news(stock_name)
+    news = []#get_stock_news(stock_name)
     if len(news) == 0:
         news = None
     data = get_historical(stock_name)
