@@ -45,14 +45,8 @@ def update_cache(df, stock_name):
     if len(df) == 0:
         return None
     if 'Date' not in df.columns:
-<<<<<<< HEAD
         df['Date'] = df.index.to_series().astype(str).apply(lambda x:x[:10])
     df['Symbol'] = stock_name
-=======
-        df.reset_index(inplace=True)
-        df['Date'] = df['Date'].apply(lambda dt: dt[:10])
-    print(df)
->>>>>>> ea23864db04ede955457a07c1f4941f3652ca381
     pd.concat([df_cache, df[COLUMNS]], ignore_index=True)
     df_cache.to_csv(STACK_CACHE_PATH, index=False)
 
