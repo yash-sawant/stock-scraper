@@ -24,6 +24,11 @@ def index():
     return redirect(url_for('market'))
 
 
+@app.route('/error')
+def error():
+    return render_template('error.html')
+
+
 @app.route('/news')
 def news():
     df = load_database(last_n=NEWS_LIMIT)
@@ -38,10 +43,12 @@ def search():
     if request.method == "POST":
         stock_name = dict(request.form).get('search')
         data = get_historical(stock_name)
-        content = plot_single_graph(stock_name, data)
-        return render_template('dashboard.html', content=content)
-    else:
-        return redirect(url_for('index'))
+        if data is not None:
+            content = plot_single_graph(stock_name, data)
+            return render_template('dashboard.html', content=content)
+
+        print(data)
+    return redirect(url_for('error'))
 
 
 @app.route('/market', methods=['POST', 'GET'])
@@ -50,11 +57,17 @@ def market():
         stock_name = dict(request.form).get('search')
     else:
         stock_name = DEFAULT_STOCK
-    # news = get_stock_news(stock_name)
+    news = get_stock_news(stock_name)
+    if len(news) == 0:
+        news = None
     data = get_historical(stock_name)
-    pred = predict(data)
-    content = plot_single_graph(stock_name, data, pred=pred)
-    return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
+    if data is not None:
+        pred = predict(data)
+        content = plot_single_graph(stock_name, data, pred=pred)
+        return render_template('dashboard.html', content=content, news=news[:NEWS_LIMIT])
+    else:
+        print(data)
+        return redirect(url_for('error'))
 
 
 @app.route('/evaluation', methods=['POST', 'GET'])
@@ -64,14 +77,15 @@ def evaluation():
     else:
         stock_name = DEFAULT_STOCK
     data = get_historical(stock_name)
-
-    pred, true = evaluate(data)
-
-    content = plot_eval_graph(stock_name, data, pred, true)
-    return render_template('evaluation.html', content=content)
+    if data is not None:
+        pred, true = evaluate(data)
+        content = plot_eval_graph(stock_name, data, pred, true)
+        return render_template('evaluation.html', content=content)
+    print(data)
+    return redirect(url_for('error'))
 
 
 if __name__ == '__main__':
     # port = int(os.environ.get('PORT', 8000))
     # app.run(threaded=False, host='0.0.0.0', port=port)
-    app.run(debug=True, threaded=False, host='0.0.0.0', port=8080)
+    app.run(threaded=False, host='0.0.0.0', port=8080)

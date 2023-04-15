@@ -1,6 +1,6 @@
 Flask~=2.2.2
 gunicorn==20.1.0
-pandas==1.5.3
+pandas
 tensorflow==2.12.0
 yfinance==0.2.14
 beautifulsoup4==4.12.0
