@@ -59,7 +59,7 @@ def market():
         stock_name = DEFAULT_STOCK
     news = []#get_stock_news(stock_name)
     if len(news) == 0:
-        news = None
+        news = []
     data = get_historical(stock_name)
     if data is not None:
         pred = predict(data)
