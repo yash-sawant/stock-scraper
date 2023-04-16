@@ -23,6 +23,7 @@
     </div>
     {% endfor %}
 
+    {% if news %}
     {% for src, article, title in news %}
     <main role="main" class="container">
         <div class="jumbotron">
@@ -32,6 +33,7 @@
         </div>
     </main>
     {% endfor %}
+    {% endif %}
 </div>
 
 

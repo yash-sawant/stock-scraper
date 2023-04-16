@@ -4,7 +4,7 @@ import datetime
 from datetime import timedelta
 from functools import lru_cache
 import traceback
-from prediction import dt_func
+from prediction import dt_func, INPUT_SIZE
 
 INTERVALS = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk', '1mo', '3mo']
 
@@ -43,47 +43,48 @@ def get_6m_date_interval():
 def update_cache(df, stock_name):
 
     if len(df) == 0:
-        return
-    df['Symbol'] = stock_name
+        return None
     if 'Date' not in df.columns:
-        df.reset_index(inplace=True)
-        df['Date'] = df['Date'].apply(lambda dt: dt[:10])
-    print(df)
+        df['Date'] = df.index.to_series().astype(str).apply(lambda x:x[:10])
+    df['Symbol'] = stock_name
     pd.concat([df_cache, df[COLUMNS]], ignore_index=True)
     df_cache.to_csv(STACK_CACHE_PATH, index=False)
 
 
 @lru_cache(5)
 def get_historical(stock, interval='1d', st_dt=None, ed_dt=None):
+
     if not validate_dt(st_dt) or not validate_dt(ed_dt):
         st_dt, ed_dt = get_6m_date_interval()
 
     if interval not in INTERVALS:
         interval = '1d'
 
-    # try:
-    #     # If stock is present in cache
-    #     if stock in df_ticker_cache:
-    #         stock_df_cache = df_cache[df_cache['Symbol'] == stock][['Date', 'Open', 'High', 'Low', 'Close', 'Volume']]
-    #         # if stock data is present till start date
-    #         if min(stock_df_cache['Date']) <= st_dt:
-    #             if max(stock_df_cache['Date']) >= ed_dt:
-    #                 historical = stock_df_cache[(stock_df_cache.Date > st_dt) & (stock_df_cache.Date < ed_dt)]
-    #                 return historical.set_index('Date')
-    #             else:
-    #                 historical1 = stock_df_cache[(stock_df_cache.Date > st_dt)].set_index('Date')[TRAIN_COLS]
-    #                 tick = get_ticker(stock)
-    #                 historical = tick.history(start=max(stock_df_cache['Date']), end=ed_dt, interval=interval)
-    #                 update_cache(historical, stock)
-    #                 return pd.concat([historical1, historical[COLUMNS]]).set_index('Date')
-    # except Exception as e:
-    #     print(e)
-    #     print(traceback.format_exc())
-    #     raise e
+    try:
+        # If stock is present in cache
+        if stock in df_ticker_cache:
+            stock_df_cache = df_cache[df_cache['Symbol'] == stock][COLUMNS].copy()
+            # if stock data is present till start date
+            if min(stock_df_cache['Date']) <= st_dt:
+                if max(stock_df_cache['Date']) >= ed_dt:
+                    historical = stock_df_cache[(stock_df_cache.Date > st_dt) & (stock_df_cache.Date < ed_dt)].copy()
+                    return historical.set_index('Date')
+                else:
+                    historical1 = stock_df_cache[(stock_df_cache.Date > st_dt)].copy()
+                    historical1 = historical1.set_index('Date')
+                    tick = get_ticker(stock)
+                    historical = tick.history(start=max(stock_df_cache['Date']), end=ed_dt, interval=interval)
+                    update_cache(historical.copy(), stock)
+
+                    return pd.concat([historical1[TRAIN_COLS], historical[TRAIN_COLS]],sort=True)
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
 
     tick = get_ticker(stock)
     historical = tick.history(start=st_dt, end=ed_dt, interval=interval)
-    # ['Open', 'High', 'Low', 'Close', 'Volume', 'Dividends', 'Stock Splits'],
+    if len(historical) != INPUT_SIZE:
+        return None
     return historical
 
 

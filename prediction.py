@@ -10,7 +10,7 @@ from keras.models import load_model
 import tensorflow as tf
 
 # Loading model
-MODEL_FOLDER = 'model/model_150_v2'
+MODEL_FOLDER = 'model/new_model'
 model = load_model(MODEL_FOLDER)
 
 # MODEL_FOLDER = 'model/model_v1'
