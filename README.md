@@ -1,10 +1,10 @@
 # Flask Stock Dashboard
-### This is a Flask web application that provides a stock dashboard for a given stock symbol. It includes historical stock data visualization, prediction of stock prices, evaluation of the model's prediction, and a news feed for the stock.
+This is a Flask web application that provides a dashboard real-time stock market prediction. It includes historical stock data visualization, prediction of stock prices, evaluation of the model's prediction for the past 20 days, and a news feed for the stock.
 
 [![Check it out live][run_img]][run_link]
 
 [run_img]: https://storage.googleapis.com/cloudrun/button.svg
-[run_link]: https://movie-recommender-pssahwnxxa-pd.a.run.app
+[run_link]: https://stock-scraper-pssahwnxxa-pd.a.run.app
 
 ## Getting Started
 
@@ -25,6 +25,10 @@ gcloud run deploy
 ## Usage
 
 Enter a stock symbol in the search bar and click on the search button to view the dashboard.
+
+## Architecture
+
+![flow_chart](https://user-images.githubusercontent.com/24872325/233854708-8d77f60a-4f66-45b3-8af2-46afb187e614.png)
 
 ## Features
 
